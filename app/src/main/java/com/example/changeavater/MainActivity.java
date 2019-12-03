@@ -78,7 +78,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 //存放在手机Sd卡的应用关联缓存目录下
                 File outputImage = new File(this.getExternalCacheDir(),"output_image.jpg");
 
-                //从6.0开始，读写sd卡被列为危险权限，如果将图片存放在sd卡的任何其他目录
+                /*从6.0开始，读写sd卡被列为危险权限，如果将图片存放在sd卡的任何其他目录，
+                都要进行运行时的权限处理才行，而使用应用关联目录则可以跳过这一步
+                 */
+                try {
+                    if (outputImage.exists()){
+                        outputImage.delete();
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
 
         }
     }
