@@ -131,7 +131,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode){
             case TAKE_CAMERA:
-                if (requestCode == RESULT_OK){
+                if (requestCode == TAKE_CAMERA){
                     //将拍摄的照片显示出来
                     try {
                         Bitmap bitmap = BitmapFactory.decodeStream(this.getContentResolver().openInputStream(imageUri));
@@ -142,7 +142,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 }
                 break;
             case PICK_PHOTO:
-                if (requestCode == RESULT_OK) { //判断手机系统版本号
+                if (requestCode == PICK_PHOTO) { //判断手机系统版本号
                     if (Build.VERSION.SDK_INT>=19){
                         //4.4及以上系统使用这个方法处理图片
                         handleImageOnKitKat(data);
