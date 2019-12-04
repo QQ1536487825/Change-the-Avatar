@@ -4,11 +4,15 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.TextView;
 
@@ -21,6 +25,7 @@ import butterknife.BindView;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
+    private Uri imageUri;
     @BindView(R.id.tv_change)
     TextView textView;
     @BindView(R.id.civ_head)
@@ -88,6 +93,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 }catch (Exception e){
                     e.printStackTrace();
                 }
+                /*从7.0开始，直接用本地真实路径Uri被认为不安全，会抛出一个FileUriExposedException异常。
+                而FileProvider则是一种特殊的内容提供器，他使用了内容提供器类似的机制对数据进行保护
+                ，可以选择性地的、将封装过的Uri共享给外部，从而提高了应用的安全性
+                 */
+                if(Build.VERSION.SDK_INT>=Build.VERSION_CODES.N){
+                    //大于等于24（7.0）场合
+                    imageUri = FileProvider.getUriForFile(this,"com.feige.pickphoto.fileprovider",outputImage);
+                }else {
+                    //小于android版本7.0（2.4）的场合
+                    imageUri = Uri.fromFile(outputImage);
+                }
+                //启动相机程序
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                //MediaStore.ACTION_IMAGE_CAPTURE =
+                intent.putExtra(MediaStore.EXTRA_OUTPUT,imageUri);
+                startActivityForResult(intent,TAKE_CAMERA);
 
 
         }
